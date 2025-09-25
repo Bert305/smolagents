@@ -2,6 +2,8 @@ import requests
 
 # from smolagents.agents import ToolCallingAgent
 from smolagents import CodeAgent, InferenceClientModel, tool
+import os
+from dotenv import load_dotenv
 
 
 # Choose which LLM engine to use!
@@ -24,7 +26,9 @@ def get_weather(location: str, celsius: bool | None = False) -> str:
     Returns:
         A string describing the current weather at the location.
     """
-    api_key = "your_api_key"  # Replace with your API key from https://weatherstack.com/
+    # Load WeatherStack API key from .env file
+    load_dotenv()
+    api_key = os.getenv("WEATHERSTACK_API_KEY")
     units = "m" if celsius else "f"  # 'm' for Celsius, 'f' for Fahrenheit
 
     url = f"http://api.weatherstack.com/current?access_key={api_key}&query={location}&units={units}"
@@ -64,7 +68,7 @@ def convert_currency(amount: float, from_currency: str, to_currency: str) -> str
     Raises:
         requests.exceptions.RequestException: If there is an issue with the HTTP request to the ExchangeRate-API.
     """
-    api_key = "your_api_key"  # Replace with your actual API key from https://www.exchangerate-api.com/
+    api_key = os.getenv("EXCHANGERATE_API_KEY")  # Replace with your actual API key from https://www.exchangerate-api.com/
     url = f"https://v6.exchangerate-api.com/v6/{api_key}/latest/{from_currency}"
 
     try:
@@ -95,7 +99,7 @@ def get_news_headlines() -> str:
     Returns:
         str: A string containing the top 5 news headlines and their sources, or an error message.
     """
-    api_key = "your_api_key"  # Replace with your actual API key from https://newsapi.org/
+    api_key = os.getenv("NEWSAPI_API_KEY")  # Replace with your actual API key from https://newsapi.org/
     url = f"https://newsapi.org/v2/top-headlines?country=us&apiKey={api_key}"
 
     try:
