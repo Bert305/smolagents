@@ -7,8 +7,9 @@ from dotenv import load_dotenv
 
 
 # Choose which LLM engine to use!
-model = InferenceClientModel()
-# model = TransformersModel(model_id="meta-llama/Llama-3.2-2B-Instruct")
+# model = InferenceClientModel()  # Requires paid API credits
+from smolagents import TransformersModel
+model = TransformersModel(model_id="microsoft/DialoGPT-small")  # Free local model
 
 # For anthropic: change model_id below to 'anthropic/claude-3-5-sonnet-20240620'
 # model = LiteLLMModel(model_id="gpt-4o")
@@ -68,6 +69,7 @@ def convert_currency(amount: float, from_currency: str, to_currency: str) -> str
     Raises:
         requests.exceptions.RequestException: If there is an issue with the HTTP request to the ExchangeRate-API.
     """
+    load_dotenv()
     api_key = os.getenv("EXCHANGERATE_API_KEY")  # Replace with your actual API key from https://www.exchangerate-api.com/
     url = f"https://v6.exchangerate-api.com/v6/{api_key}/latest/{from_currency}"
 
@@ -99,6 +101,7 @@ def get_news_headlines() -> str:
     Returns:
         str: A string containing the top 5 news headlines and their sources, or an error message.
     """
+    load_dotenv()
     api_key = os.getenv("NEWSAPI_API_KEY")  # Replace with your actual API key from https://newsapi.org/
     url = f"https://newsapi.org/v2/top-headlines?country=us&apiKey={api_key}"
 
@@ -243,6 +246,7 @@ agent = CodeAgent(
         get_weather,
         get_news_headlines,
         get_joke,
+        get_time_in_timezone,
         get_random_fact,
         search_wikipedia,
     ],
@@ -252,8 +256,9 @@ agent = CodeAgent(
 
 # Uncomment the line below to run the agent with a specific query
 
-agent.run("Convert 5000 dollars to Euros")
-# agent.run("What is the weather in New York?")
+# Uncomment any of the lines below to test the agent:
+# agent.run("Convert 5000 dollars to Euros")
+agent.run("What is the weather in New York?")
 # agent.run("Give me the top news headlines")
 # agent.run("Tell me a joke")
 # agent.run("Tell me a Random Fact")
